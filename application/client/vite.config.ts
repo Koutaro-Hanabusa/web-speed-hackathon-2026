@@ -84,6 +84,28 @@ export default defineConfig({
           }
           return "assets/[name]-[hash][extname]";
         },
+        manualChunks(id) {
+          // React core + router + redux
+          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/") || id.includes("node_modules/react-router") || id.includes("node_modules/react-redux") || id.includes("node_modules/redux") || id.includes("node_modules/@reduxjs")) {
+            return "vendor-react";
+          }
+          // Markdown rendering (Crok page)
+          if (id.includes("node_modules/react-markdown") || id.includes("node_modules/rehype-katex") || id.includes("node_modules/remark-gfm") || id.includes("node_modules/remark-math") || id.includes("node_modules/katex") || id.includes("node_modules/react-syntax-highlighter")) {
+            return "vendor-markdown";
+          }
+          // Markdown/unified ecosystem shared deps
+          if (id.includes("node_modules/unified") || id.includes("node_modules/remark-") || id.includes("node_modules/rehype-") || id.includes("node_modules/hast-") || id.includes("node_modules/mdast-") || id.includes("node_modules/micromark") || id.includes("node_modules/unist-")) {
+            return "vendor-markdown";
+          }
+          // Web LLM (translation)
+          if (id.includes("node_modules/@mlc-ai")) {
+            return "vendor-webllm";
+          }
+          // Kuromoji + NLP
+          if (id.includes("node_modules/kuromoji") || id.includes("node_modules/bayesian-bm25") || id.includes("node_modules/negaposi-analyzer")) {
+            return "vendor-nlp";
+          }
+        },
       },
     },
   },
