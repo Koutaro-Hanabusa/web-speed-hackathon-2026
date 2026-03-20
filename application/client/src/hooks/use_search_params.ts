@@ -7,22 +7,17 @@ export function useSearchParams(): [URLSearchParams] {
   const lastSearchRef = useRef(window.location.search);
 
   useEffect(() => {
-    let active = true;
-
-    const poll = () => {
-      if (!active) return;
+    const handleChange = () => {
       const currentSearch = window.location.search;
       if (currentSearch !== lastSearchRef.current) {
         lastSearchRef.current = currentSearch;
         setSearchParams(new URLSearchParams(currentSearch));
       }
-      scheduler.postTask(poll, { priority: "user-blocking", delay: 1 });
     };
 
-    scheduler.postTask(poll, { priority: "user-blocking", delay: 1 });
-
+    window.addEventListener("popstate", handleChange);
     return () => {
-      active = false;
+      window.removeEventListener("popstate", handleChange);
     };
   }, []);
 
