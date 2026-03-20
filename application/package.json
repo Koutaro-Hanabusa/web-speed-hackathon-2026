@@ -22,10 +22,6 @@
   },
   "packageManager": "pnpm@10.32.1",
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "ffmpeg-static",
-      "sharp"
-    ],
     "overrides": {
       "gifler>bluebird": "3.7.2",
       "gifler>omggif": "1.0.10"
