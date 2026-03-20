@@ -29,7 +29,6 @@ const config = {
   devtool: isProd ? false : "eval-source-map",
   entry: {
     main: [
-      "jquery-binarytransport",
       path.resolve(SRC_PATH, "./index.css"),
       path.resolve(SRC_PATH, "./buildinfo.ts"),
       path.resolve(SRC_PATH, "./index.tsx"),
@@ -59,7 +58,6 @@ const config = {
   },
   output: {
     chunkFilename: isProd ? "scripts/chunk-[contenthash].js" : "scripts/chunk-[id].js",
-    chunkFormat: false,
     filename: isProd ? "scripts/[name]-[contenthash].js" : "scripts/[name].js",
     path: DIST_PATH,
     publicPath: "auto",
@@ -67,10 +65,8 @@ const config = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      $: "jquery",
       AudioContext: ["standardized-audio-context", "AudioContext"],
       Buffer: ["buffer", "Buffer"],
-      "window.jQuery": "jquery",
     }),
     new webpack.EnvironmentPlugin({
       BUILD_DATE: new Date().toISOString(),
@@ -127,14 +123,18 @@ const config = {
       url: false,
     },
   },
-  optimization: isProd ? {} : {
-    minimize: false,
-    splitChunks: false,
-    concatenateModules: false,
-    usedExports: false,
-    providedExports: false,
-    sideEffects: false,
-  },
+  optimization: isProd
+    ? {
+      splitChunks: { chunks: all },
+    }
+    : {
+      minimize: false,
+      splitChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      providedExports: false,
+      sideEffects: false,
+    },
   cache: !isProd,
   ignoreWarnings: [
     {
