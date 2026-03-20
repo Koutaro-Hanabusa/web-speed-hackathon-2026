@@ -13,7 +13,7 @@ import {
 
 import { FontAwesomeIcon } from "@web-speed-hackathon-2026/client/src/components/foundation/FontAwesomeIcon";
 import { DirectMessageFormData } from "@web-speed-hackathon-2026/client/src/direct_message/types";
-import { getProfileImagePath } from "@web-speed-hackathon-2026/client/src/utils/get_path";
+import { getOptimizedProfileImagePath } from "@web-speed-hackathon-2026/client/src/utils/get_path";
 
 interface Props {
   conversationError: Error | null;
@@ -99,7 +99,9 @@ export const DirectMessagePage = ({
         <img
           alt={peer.profileImage.alt}
           className="h-12 w-12 rounded-full object-cover"
-          src={getProfileImagePath(peer.profileImage.id)}
+          height={48}
+          src={getOptimizedProfileImagePath(peer.profileImage.id, 96)}
+          width={48}
         />
         <div className="min-w-0">
           <h1 className="overflow-hidden text-xl font-bold text-ellipsis whitespace-nowrap">
