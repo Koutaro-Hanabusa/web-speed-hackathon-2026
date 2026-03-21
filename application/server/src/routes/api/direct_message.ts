@@ -201,12 +201,43 @@ directMessageRouter.post("/dm/:conversationId/messages", async (req, res) => {
     body: body.trim(),
     conversationId: conversation.id,
     senderId: req.session.userId,
-  });
+  }, { hooks: false });
   await message.reload({
     include: [...SENDER_INCLUDE],
   });
 
-  return res.status(201).type("application/json").send(message);
+  res.status(201).type("application/json").send(message);
+
+  eventhub.emit(`dm:conversation/${conversation.id}:message`, message);
+
+  const receiverId =
+    conversation.initiatorId !== req.session.userId
+      ? conversation.initiatorId
+      : conversation.memberId;
+
+  setImmediate(async () => {
+    try {
+      const unreadCount = await DirectMessage.count({
+        distinct: true,
+        where: {
+          senderId: { [Op.ne]: receiverId },
+          isRead: false,
+        },
+        include: [
+          {
+            association: "conversation",
+            where: {
+              [Op.or]: [{ initiatorId: receiverId }, { memberId: receiverId }],
+            },
+            required: true,
+          },
+        ],
+      });
+      eventhub.emit(`dm:unread/${receiverId}`, { unreadCount });
+    } catch {
+      // ignore
+    }
+  });
 });
 
 directMessageRouter.post("/dm/:conversationId/read", async (req, res) => {
