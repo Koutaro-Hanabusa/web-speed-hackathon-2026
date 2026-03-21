@@ -36,7 +36,8 @@ async function findSoundFile(soundId: string): Promise<string | null> {
 }
 
 async function computeWaveformPeaks(filePath: string): Promise<{ peaks: number[]; max: number }> {
-  const tmpDir = await fs.mkdtemp(path.join(import.meta.dirname, "../../.cache/waveform-"));
+  await fs.mkdir(CACHE_PATH, { recursive: true });
+  const tmpDir = await fs.mkdtemp(path.join(CACHE_PATH, "waveform-"));
   const outputPath = path.join(tmpDir, "output.pcm");
 
   try {
