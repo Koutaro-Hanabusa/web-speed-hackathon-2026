@@ -6,8 +6,6 @@ import postcssImport from "postcss-import";
 import postcssPresetEnv from "postcss-preset-env";
 import { defineConfig } from "vite";
 
-const SRC_PATH = path.resolve(__dirname, "./src");
-
 export default defineConfig({
   root: "src",
   publicDir: false,
@@ -18,18 +16,6 @@ export default defineConfig({
       {
         find: "@web-speed-hackathon-2026/client",
         replacement: path.resolve(__dirname),
-      },
-      {
-        find: /^bayesian-bm25$/,
-        replacement: path.resolve(__dirname, "node_modules/bayesian-bm25/dist/index.js"),
-      },
-      {
-        find: /^kuromoji$/,
-        replacement: path.resolve(__dirname, "node_modules/kuromoji/build/kuromoji.js"),
-      },
-      {
-        find: /\.\.\/dict\/pn_ja\.dic\.json$/,
-        replacement: path.resolve(SRC_PATH, "data/pn_ja.dic.json"),
       },
     ],
   },
@@ -101,16 +87,12 @@ export default defineConfig({
           if (id.includes("node_modules/@mlc-ai")) {
             return "vendor-webllm";
           }
-          // Kuromoji + NLP
-          if (id.includes("node_modules/kuromoji") || id.includes("node_modules/bayesian-bm25") || id.includes("node_modules/negaposi-analyzer")) {
-            return "vendor-nlp";
-          }
         },
       },
     },
   },
 
   optimizeDeps: {
-    include: ["kuromoji", "bayesian-bm25", "buffer"],
+    include: ["buffer"],
   },
 });

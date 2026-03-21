@@ -9,7 +9,6 @@ import {
 } from "@web-speed-hackathon-2026/client/src/search/services";
 import { SearchFormData } from "@web-speed-hackathon-2026/client/src/search/types";
 import { validate } from "@web-speed-hackathon-2026/client/src/search/validation";
-import { analyzeSentiment } from "@web-speed-hackathon-2026/client/src/utils/negaposi_analyzer";
 
 import { Button } from "../foundation/Button";
 
@@ -57,8 +56,9 @@ const SearchPageComponent = ({
     }
 
     let isMounted = true;
-    analyzeSentiment(parsed.keywords)
-      .then((result) => {
+    fetch(`/api/v1/sentiment?text=${encodeURIComponent(parsed.keywords)}`)
+      .then((res) => res.json())
+      .then((result: { score: number; label: string }) => {
         if (isMounted) {
           setIsNegative(result.label === "negative");
         }
