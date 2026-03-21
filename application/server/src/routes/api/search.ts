@@ -50,7 +50,7 @@ searchRouter.get("/search", async (req, res) => {
   // ユーザー名/名前での検索（キーワードがある場合のみ）
   let postsByUser: typeof postsByText = [];
   if (searchTerm) {
-    postsByUser = await Post.findAll({
+    postsByUser = await Post.unscoped().findAll({
       include: [
         {
           association: "user",
@@ -68,9 +68,15 @@ searchRouter.get("/search", async (req, res) => {
         { association: "movie" },
         { association: "sound" },
       ],
+      attributes: { exclude: ["userId", "movieId", "soundId"] },
+      order: [
+        ["id", "DESC"],
+        ["images", "createdAt", "ASC"],
+      ],
       limit,
       offset,
       where: dateWhere,
+      subQuery: false,
     });
   }
 
