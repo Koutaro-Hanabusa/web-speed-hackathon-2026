@@ -115,6 +115,6 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    include: ["kuromoji", "bayesian-bm25", "gifler", "buffer"],
+    include: ["kuromoji", "bayesian-bm25", "buffer"],
   },
 });
